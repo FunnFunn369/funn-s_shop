@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+</head>
+<style>
+    body{
+        background-color: rgb(177, 182, 182);
+        min-width: 100vh;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+    }
+    .container{
+        padding: 16px;
+        background-color: rgb(255, 255, 255);
+        padding: 40px;
+        border-radius: 30px;
+    }
+    label{
+        font-size: 18px;
+    }
+    input{
+        width: 100%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+    }
+    input:focus{
+        border: 2px solid rgb(0, 168, 0);
+        outline: none;
+    }
+    .forgot_password{
+        text-align: right;
+        margin: 6px;
+    }
+    .btn_login{
+        background-color: rgb(1, 161, 1);
+        width: 100%;
+        padding: 14px 20px;
+        border: none;
+        cursor: pointer;
+        color: white;
+    }
+    .btn_reset{
+        margin-top: 6px;
+        background-color: rgb(2, 169, 2);
+        width: 100%;
+        padding: 14px 20px;
+        border: none;
+        cursor: pointer;
+        color: white;
+    }
+    .btn_signup{
+        background-color: white;
+        width: 100%;
+        margin-top: 6px;
+        border: 1px solid green;
+        padding: 14px 20px;
+        cursor: pointer;
+
+
+    }
+    .image_container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+<body>
+    
+
+    <div class="container">
+        <div class="image_container">
+            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="avatar" style="width: 100px; height: 100px; ">
+        </div>
+        <div>
+            <label for="">Username</label>
+            <input type="text" id="username" placeholder="Enter username"> <br>
+            <span id="usernameError"></span>
+        </div>
+
+        <div>
+            <label for="">Password</label>
+            <input type="password" placeholder="Enter password" id="password"> <br>
+            <span id="passwordError"></span>
+        </div>
+
+        <div class="forgot_password" >
+        <a href="http://">forgot password</a>
+        </div>
+
+        <button class="btn_login" id="loginBtn" type="button">Login</button>
+        <button class="btn_signup" id="registerBtn" type="button">SignUp</button>
+        <button class="btn_reset" id="resetBtn" type="button">Reset</button> <br>
+
+        <span id="successMsg"></span>
+
+    </div>
+    <script>
+        const loginBtn = document.getElementById('loginBtn')
+
+        const username = document.getElementById('username')
+        const pwd = document.getElementById('password')
+
+        const usernameError = document.getElementById('usernameError')
+        const pwdError = document.getElementById('passwordError')
+
+        const successMsg = document.getElementById('successMsg')
+        const resetBtn = document.getElementById('resetBtn')
+        const registerBtn = document.getElementById('registerBtn')
+        const registeredList = document.getElementById('registeredList')
+
+
+        let registeredUsername = ""
+        let registeredPassword = ""
+
+        loginBtn.addEventListener('click', function () {
+            if (validation()) {
+                login()
+            }
+        })
+
+
+        registerBtn.addEventListener('click', function(){
+            register()
+        })
+
+        resetBtn.addEventListener('click', function(){
+            reset()
+        })
+
+        function register(){
+            registeredUsername = username.value
+            registeredPassword = pwd.value
+
+            registeredList.innerText = registeredUsername
+        }
+
+        function reset(){
+            username.value = ""
+            pwd.value = ""
+
+            usernameError.innerTex = ''
+            pwdError.innerText = ''
+            successMsg.innerTex = ''
+        }
+
+        function login(){
+            let inCorrect = false
+
+            if(username.value === registeredUsername && pwd.value === registeredPassword) {
+                inCorrect = true
+            }
+
+            if(inCorrect === true) {
+                successMsg.innerText = "Login Successful"
+                successMsg.style.color = 'green'
+            }
+
+            if(inCorrect === false) {
+                successMsg.innerText = "Incorrect username or password"
+                successMsg.style.color = 'red'
+            }
+        }
+        
+        function validation() {
+            let isValid = true
+
+            if (username.value === "") {
+                usernameError.innerText = "Enter your username"
+                usernameError.style.color = 'red'
+                isValid = false
+            } else {
+                usernameError.innerText = ""
+            }
+
+            if (pwd.value === "") {
+                pwdError.innerText = "Enter your password"
+                pwdError.style.color = 'red'
+                isValid = false
+            } else {
+                pwdError.innerText = ""
+            }
+
+            return isValid
+        }
+
+
+    </script>
+</body>
+</html>

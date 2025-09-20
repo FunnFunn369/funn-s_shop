@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Styled Calculator</title>
+<style>
+    body {
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    .calculator {
+        background: #1c1c1c;
+        padding: 20px;
+        border-radius: 25px;
+        display: inline-block;
+    }
+
+    .display {
+        background: #1c1c1c;
+        color: white;
+        font-size: 2.5em;
+        text-align: right;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        height: 50px;
+        overflow: hidden;
+    }
+
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 70px);
+        grid-gap: 10px;
+    }
+
+    button {
+        height: 70px;
+        font-size: 1.5em;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        color: white;
+    }
+
+    .gray { background: #a5a5a5; color: black; }
+    .dark { background: #333; }
+    .orange { background: #f1a33c; }
+
+    .zero {
+        grid-column: span 2;
+        border-radius: 35px;
+        text-align: left;
+        padding-left: 25px;
+    }
+</style>
+</head>
+<body>
+
+<div class="calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+        <button class="gray" onclick="clearDisplay()">AC</button>
+        <button class="gray" onclick="toggleSign()">+/-</button>
+        <button class="gray" onclick="appendValue('%')">%</button>
+        <button class="orange" onclick="appendValue('/')">/</button>
+
+        <button class="dark" onclick="appendValue('7')">7</button>
+        <button class="dark" onclick="appendValue('8')">8</button>
+        <button class="dark" onclick="appendValue('9')">9</button>
+        <button class="orange" onclick="appendValue('*')">×</button>
+
+        <button class="dark" onclick="appendValue('4')">4</button>
+        <button class="dark" onclick="appendValue('5')">5</button>
+        <button class="dark" onclick="appendValue('6')">6</button>
+        <button class="orange" onclick="appendValue('-')">−</button>
+
+        <button class="dark" onclick="appendValue('1')">1</button>
+        <button class="dark" onclick="appendValue('2')">2</button>
+        <button class="dark" onclick="appendValue('3')">3</button>
+        <button class="orange" onclick="appendValue('+')">+</button>
+
+        <button class="dark zero" onclick="appendValue('0')">0</button>
+        <button class="dark" onclick="appendValue('.')">.</button>
+        <button class="orange" onclick="calculateResult()">=</button>
+    </div>
+</div>
+
+<script>
+    let display = document.getElementById("display");
+
+    function appendValue(val) {
+        if (display.innerText === "0" && val !== ".") {
+            display.innerText = val;
+        } else {
+            display.innerText += val;
+        }
+    }
+
+    function clearDisplay() {
+        display.innerText = "0";
+    }
+
+    function toggleSign() {
+        if (display.innerText.startsWith("-")) {
+            display.innerText = display.innerText.substring(1);
+        } else {
+            display.innerText = "-" + display.innerText;
+        }
+    }
+
+    function calculateResult() {
+        try {
+            display.innerText = eval(display.innerText);
+        } catch {
+            display.innerText = "Error";
+        }
+    }
+</script>
+
+</body>
+</html>

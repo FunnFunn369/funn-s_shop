@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Phone Shop</title>
+<style>
+  :root{
+    --bg: #ffffff;          /* white background */
+    --card: #f9f9f9;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --accent: #111827;
+    --btn: #2563eb;         /* blue button */
+    --btn-text:#ffffff;
+    --radius: 12px;
+    --shadow: 0 6px 18px rgba(0,0,0,.08);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color:var(--text);
+    background:var(--bg);
+  }
+  header{
+    position:sticky; top:0; z-index:5;
+    background:#fff;
+    padding:20px clamp(16px, 4vw, 40px);
+    border-bottom: 2px solid #eee;
+  }
+  h1{margin:0; font-size:clamp(22px, 2.4vw, 32px)}
+  .container{
+    display:grid;
+    grid-template-columns: 1fr 320px;
+    gap:24px;
+    padding:24px clamp(16px, 4vw, 40px) 40px;
+  }
+  @media (max-width: 900px){
+    .container{ grid-template-columns: 1fr; }
+  }
+
+  /* products */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap:20px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    display:flex; flex-direction:column;
+  }
+  .card img{
+    width:100%; aspect-ratio: 4/3; object-fit:contain; background:#fff;
+  }
+  .card .body{ padding:14px 14px 16px; }
+  .title{ font-weight:700; line-height:1.2; }
+  .desc{ color:var(--muted); font-size:.95rem; margin:6px 0 10px; }
+  .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .price{ font-weight:800; }
+  button{
+    cursor:pointer;
+    border:none;
+    padding:10px 14px;
+    border-radius:8px;
+    background:var(--btn);
+    color:var(--btn-text);
+    font-weight:700;
+  }
+  button:active{ transform: scale(.97); }
+
+  /* cart */
+  aside{
+    background:#f9fafb;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:16px;
+    position:sticky; top:88px; height: fit-content;
+  }
+  .cart-title{ font-size:1.1rem; font-weight:800; margin:0 0 6px; }
+  .cart-items{ display:grid; gap:10px; margin:12px 0; }
+  .cart-line{
+    display:grid; grid-template-columns: 1fr auto auto; gap:8px; align-items:center;
+    padding:8px 10px; border-radius:8px; background:#fff;
+    border:1px solid #eee;
+  }
+  .qtybox{ display:flex; align-items:center; gap:6px; }
+  .qtybox button{ padding:6px 10px; }
+  .total{
+    display:flex; justify-content:space-between; align-items:center; font-weight:800;
+    padding-top:10px; border-top:2px solid #eee;
+  }
+  .empty{ color:var(--muted); font-style:italic; }
+  .checkout{ width:100%; margin-top:12px; background:var(--accent); color:#fff; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>📱 Phone Shop</h1>
+  </header>
+
+  <main class="container">
+    <!-- PRODUCTS -->
+    <section id="products" class="grid"></section>
+
+    <!-- CART -->
+    <aside>
+      <p class="cart-title">🛒 Your Cart</p>
+      <div id="cart" class="cart-items">
+        <div class="empty">Cart is empty.</div>
+      </div>
+      <div class="total">
+        <span>Total</span>
+        <span id="total">$0.00</span>
+      </div>
+      <button class="checkout" onclick="alert('Srry u have no money left in ur bank')">Checkout</button>
+    </aside>
+  </main>
+
+<script>
+  // --- iPhone products with provided images ---
+  const PRODUCTS = [
+    {
+      id: 'nokia',
+      name: 'Nokia5 (Black)',
+      desc: '128GB • 6.1" OLED • A16 Bionic',
+      price: 799,
+      img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHSKRr5LgCvSq2ayGppR8PHSxUCyP3wzLFhw&s' // your pink image
+    },
+    {
+      id: 'samsung',
+      name: 'Samsung Taobao(Black)',
+      desc: '128GB • 6.1" OLED • A16 Bionic',
+      price: 30000,
+      img: 'https://5.imimg.com/data5/DS/NT/MY-26500788/samsung-android-mobile-500x500.png' // your white image
+    },
+    {
+      id: 'Baby oil',
+      name: 'Baby oil(Press Q to buy)',
+      price: 3,
+      img: 'https://static.beautytocare.com/media/catalog/product/j/o/johnson-s-baby-oil-500ml_1.jpg' // your pink image
+    },
+    {
+      id: 'samsung magic 67',
+      name: 'Samsung magic 67(Freeze everything)',
+      desc: '6767GB • 9.2" OLED • A16 Bionic',
+      price: 123,
+      img: 'https://ansons.ph/wp-content/uploads/2013/10/RT20FARVDSA.jpg' // your white image
+    },
+    {
+      id: 'Apple phone',
+      name: 'Apple phone(White)',
+      desc: '50GB • 3.1" OLED • A16 Bionic',
+      price: 1200,
+      img: 'https://www.zdnet.com/a/img/resize/941444c77a6afbb9f71106272c2d8366967a2339/2014/09/18/74ba9990-3f31-11e4-b6a0-d4ae52e95e57/iphone-5-teardown-highlights.jpg?auto=webp&fit=crop&height=900&width=1200' // your pink image
+    },
+    {
+      id: 'Google pixel 5S ultra',
+      name: 'Google pixel 5S ultra(Black)',
+      desc: '3343GB • 6.1" OLED • A16 Bionic',
+      price: 800,
+      img: 'https://www.cnet.com/a/img/resize/b0a09b447bc38b958e6a060a6b4040d6fbffcb8a/hub/2016/10/04/c0db247c-f902-4615-b4a7-d4da3edb28aa/google-pixel-phone-100416-1057.jpg?auto=webp&width=1200' // your white image
+    },
+    
+  ];
+
+  const state = { items: {} };
+  const $ = sel => document.querySelector(sel);
+  function money(n){ return `$${n.toFixed(2)}` }
+
+  function renderProducts(list = PRODUCTS){
+    const wrap = $('#products');
+    wrap.innerHTML = '';
+    list.forEach(p => {
+      const el = document.createElement('article');
+      el.className = 'card';
+      el.innerHTML = `
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <div class="body">
+          <div class="title">${p.name}</div>
+          <div class="desc">${p.desc}</div>
+          <div class="row">
+            <div class="price">${money(p.price)}</div>
+            <button onclick='addToCart("${p.id}")'>Add to cart</button>
+          </div>
+        </div>
+      `;
+      wrap.appendChild(el);
+    });
+  }
+
+  function addToCart(id){
+    const p = PRODUCTS.find(x => x.id === id);
+    if(!state.items[id]) state.items[id] = { product: p, qty: 0 };
+    state.items[id].qty++;
+    renderCart();
+  }
+
+  function changeQty(id, delta){
+    if(!state.items[id]) return;
+    state.items[id].qty += delta;
+    if(state.items[id].qty <= 0) delete state.items[id];
+    renderCart();
+  }
+
+  function renderCart(){
+    const wrap = $('#cart');
+    wrap.innerHTML = '';
+    const ids = Object.keys(state.items);
+    if(ids.length === 0){
+      wrap.innerHTML = '<div class="empty">Cart is empty.</div>';
+      $('#total').textContent = money(0);
+      return;
+    }
+    let total = 0;
+    ids.forEach(id => {
+      const { product, qty } = state.items[id];
+      total += product.price * qty;
+      const line = document.createElement('div');
+      line.className = 'cart-line';
+      line.innerHTML = `
+        <div>
+          <strong>${product.name}</strong>
+          <div class="desc">${money(product.price)}</div>
+        </div>
+        <div class="qtybox">
+          <button onclick='changeQty("${id}", -1)'>−</button>
+          <span>${qty}</span>
+          <button onclick='changeQty("${id}", 1)'>+</button>
+        </div>
+        <div><strong>${money(product.price * qty)}</strong></div>
+      `;
+      wrap.appendChild(line);
+    });
+    $('#total').textContent = money(total);
+  }
+
+  // init
+  renderProducts(PRODUCTS);
+  renderCart();
+</script>
+</body>
+</html>
